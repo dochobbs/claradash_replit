@@ -4,6 +4,9 @@ import {
   children, 
   aiInteractions, 
   providerReviews,
+  medications,
+  allergies,
+  problemList,
   type Patient, 
   type InsertPatient,
   type Child,
@@ -14,6 +17,9 @@ import {
   type InsertProviderReview,
   type PatientWithChildren,
   type AiInteractionWithDetails,
+  type Medication,
+  type Allergy,
+  type ProblemListItem,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
@@ -42,6 +48,16 @@ export interface IStorage {
   getProviderReview(id: string): Promise<ProviderReview | undefined>;
   getReviewsByInteraction(interactionId: string): Promise<ProviderReview[]>;
   createProviderReview(review: InsertProviderReview): Promise<ProviderReview>;
+
+  // Medical Data
+  getMedicationsByChild(childId: string): Promise<Medication[]>;
+  getAllergiesByChild(childId: string): Promise<Allergy[]>;
+  getProblemListByChild(childId: string): Promise<ProblemListItem[]>;
+  getChildMedicalData(childId: string): Promise<{
+    medications: Medication[];
+    allergies: Allergy[];
+    problemList: ProblemListItem[];
+  }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -216,6 +232,49 @@ export class DatabaseStorage implements IStorage {
       .values(insertReview)
       .returning();
     return review;
+  }
+
+  // Medical Data
+  async getMedicationsByChild(childId: string): Promise<Medication[]> {
+    return await db
+      .select()
+      .from(medications)
+      .where(eq(medications.childId, childId))
+      .orderBy(desc(medications.createdAt));
+  }
+
+  async getAllergiesByChild(childId: string): Promise<Allergy[]> {
+    return await db
+      .select()
+      .from(allergies)
+      .where(eq(allergies.childId, childId))
+      .orderBy(desc(allergies.createdAt));
+  }
+
+  async getProblemListByChild(childId: string): Promise<ProblemListItem[]> {
+    return await db
+      .select()
+      .from(problemList)
+      .where(eq(problemList.childId, childId))
+      .orderBy(desc(problemList.createdAt));
+  }
+
+  async getChildMedicalData(childId: string): Promise<{
+    medications: Medication[];
+    allergies: Allergy[];
+    problemList: ProblemListItem[];
+  }> {
+    const [meds, allergyList, problems] = await Promise.all([
+      this.getMedicationsByChild(childId),
+      this.getAllergiesByChild(childId),
+      this.getProblemListByChild(childId),
+    ]);
+
+    return {
+      medications: meds,
+      allergies: allergyList,
+      problemList: problems,
+    };
   }
 }
 

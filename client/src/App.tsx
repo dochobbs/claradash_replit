@@ -7,6 +7,7 @@ import Dashboard from "@/pages/Dashboard";
 import Patients from "@/pages/Patients";
 import PatientDetail from "@/pages/PatientDetail";
 import Reviews from "@/pages/Reviews";
+import ReviewWorkbench from "@/pages/ReviewWorkbench";
 import Analytics from "@/pages/Analytics";
 import NotFound from "@/pages/not-found";
 
@@ -16,7 +17,7 @@ function Router() {
       <Route path="/" component={Dashboard} />
       <Route path="/patients" component={Patients} />
       <Route path="/patients/:id" component={PatientDetail} />
-      <Route path="/reviews" component={Reviews} />
+      <Route path="/reviews" component={ReviewWorkbench} />
       <Route path="/analytics" component={Analytics} />
       <Route component={NotFound} />
     </Switch>

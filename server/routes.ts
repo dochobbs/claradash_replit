@@ -135,6 +135,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get child medical data
+  app.get("/api/children/:id/medical", async (req, res) => {
+    try {
+      const medicalData = await storage.getChildMedicalData(req.params.id);
+      res.json(medicalData);
+    } catch (error) {
+      console.error("Error fetching child medical data:", error);
+      res.status(500).json({ error: "Failed to fetch medical data" });
+    }
+  });
+
   // AI Interactions endpoints
   app.get("/api/interactions", async (_req, res) => {
     try {
