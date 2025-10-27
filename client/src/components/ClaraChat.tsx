@@ -30,7 +30,8 @@ export default function ClaraChat() {
 
   const sendMessageMutation = useMutation({
     mutationFn: async (message: string) => {
-      return await apiRequest("POST", "/api/clara/chat", { message });
+      const response = await apiRequest("POST", "/api/clara/chat", { message });
+      return await response.json();
     },
     onSuccess: (data) => {
       setMessages((prev) => [
