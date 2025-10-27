@@ -2,15 +2,26 @@ import { Link, useLocation } from "wouter";
 import { Home, Users, ClipboardList, BarChart3, MessageSquare, User } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
 
+  // Fetch badge counts
+  const { data: badges } = useQuery<{
+    reviewsPending: number;
+    escalationsActive: number;
+    messagesUnread: number;
+  }>({
+    queryKey: ["/api/stats/badges"],
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
+
   const navItems = [
     { path: "/", icon: Home, label: "Dashboard" },
     { path: "/patients", icon: Users, label: "Patients" },
-    { path: "/reviews", icon: ClipboardList, label: "Reviews" },
-    { path: "/escalations", icon: MessageSquare, label: "Escalations" },
+    { path: "/reviews", icon: ClipboardList, label: "Reviews", badge: badges?.reviewsPending, color: "bg-yellow-500" },
+    { path: "/escalations", icon: MessageSquare, label: "Escalations", badge: badges?.escalationsActive, color: "bg-coral" },
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ];
 
@@ -59,6 +70,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         <div className="absolute left-0 w-1 h-8 bg-sidebar-primary rounded-r" />
                       )}
                       <Icon className="w-5 h-5" />
+                      {item.badge && item.badge > 0 && (
+                        <span className={`absolute -top-1 -right-1 min-w-[20px] h-5 px-1 flex items-center justify-center text-[10px] font-bold text-white rounded-full ${item.color || 'bg-red-500'}`}>
+                          {item.badge > 99 ? '99+' : item.badge}
+                        </span>
+                      )}
                     </button>
                   </Link>
                 </TooltipTrigger>
