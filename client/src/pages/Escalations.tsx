@@ -275,7 +275,14 @@ export default function Escalations() {
                       {selectedEscalation.interaction.child.name}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      Parent: {selectedEscalation.interaction.patient.name} • {selectedEscalation.interaction.patient.phone}
+                      Parent: {selectedEscalation.interaction.patient.name} • 
+                      <a 
+                        href={`tel:${selectedEscalation.interaction.patient.phone}`} 
+                        className="text-primary hover:underline"
+                        data-testid="phone-link"
+                      >
+                        {selectedEscalation.interaction.patient.phone}
+                      </a>
                     </p>
                   </div>
                   <div className="flex items-center gap-2">

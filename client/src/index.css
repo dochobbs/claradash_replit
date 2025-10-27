@@ -166,11 +166,13 @@
   [data-radix-context-menu-content],
   [data-radix-hover-card-content],
   [data-radix-popover-content] {
-    @apply bg-popover/100 backdrop-blur-none shadow-lg border border-popover-border;
+    @apply bg-popover backdrop-blur-none shadow-lg border;
+    background-color: hsl(var(--popover));
+    border-color: hsl(var(--popover-border));
   }
   
   /* Solid background for toasts */
   [data-sonner-toast] {
-    @apply bg-popover/100 backdrop-blur-none;
+    @apply bg-popover backdrop-blur-none;
   }
 }

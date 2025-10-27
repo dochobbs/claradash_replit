@@ -85,7 +85,13 @@ export default function PatientDetail() {
                             <p className="text-xs uppercase tracking-wide text-muted-foreground">
                               Phone
                             </p>
-                            <p className="text-sm text-foreground">{patient.phone}</p>
+                            <a 
+                              href={`tel:${patient.phone}`} 
+                              className="text-sm text-primary hover:underline"
+                              data-testid="phone-link"
+                            >
+                              {patient.phone}
+                            </a>
                           </div>
                         </div>
                       )}

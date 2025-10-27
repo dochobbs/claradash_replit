@@ -238,7 +238,13 @@ export default function ReviewWorkbench() {
                       <div className="space-y-1 text-sm text-muted-foreground mt-1">
                         <div className="flex items-center gap-2 justify-end">
                           <Phone className="w-4 h-4" />
-                          {selectedInteraction.patient.phone}
+                          <a 
+                            href={`tel:${selectedInteraction.patient.phone}`} 
+                            className="text-primary hover:underline"
+                            data-testid="phone-link"
+                          >
+                            {selectedInteraction.patient.phone}
+                          </a>
                         </div>
                         <div className="flex items-center gap-2 justify-end">
                           <Mail className="w-4 h-4" />
