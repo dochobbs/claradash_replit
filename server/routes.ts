@@ -71,6 +71,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Badge counts endpoint for sidebar
+  app.get("/api/stats/badges", async (_req, res) => {
+    try {
+      const allInteractions = await storage.getAllAiInteractionsWithDetails();
+      const allMessages = await storage.getAllMessages();
+
+      const reviewsPending = allInteractions.filter(
+        (interaction) => interaction.reviews.length === 0
+      ).length;
+
+      const escalationsActive = allInteractions.filter((interaction) =>
+        interaction.reviews.some((review) => review.reviewDecision === "needs_escalation")
+      ).length;
+
+      // Count unread messages (messages from parents that haven't been replied to)
+      const messagesUnread = allMessages.filter((message) => 
+        message.senderRole === "parent" && !message.isRead
+      ).length;
+
+      res.json({
+        reviewsPending,
+        escalationsActive,
+        messagesUnread,
+      });
+    } catch (error) {
+      console.error("Error fetching badge counts:", error);
+      res.status(500).json({ error: "Failed to fetch badge counts" });
+    }
+  });
+
   // Patients endpoints
   app.get("/api/patients", async (_req, res) => {
     try {
