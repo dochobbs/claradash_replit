@@ -329,7 +329,7 @@ export default function ReviewWorkbench() {
                             <li key={problem.id} className="text-foreground">
                               {problem.condition}
                               {problem.icd10Code && (
-                                <span className="text-xs text-muted-foreground block">
+                                <span className="text-xs text-muted-foreground font-mono block">
                                   ICD-10: {problem.icd10Code}
                                 </span>
                               )}
@@ -422,6 +422,7 @@ export default function ReviewWorkbench() {
                         value={icd10Code}
                         onChange={(e) => setIcd10Code(e.target.value)}
                         placeholder="e.g., J45.909"
+                        className="font-mono"
                         data-testid="input-icd10"
                       />
                     </div>

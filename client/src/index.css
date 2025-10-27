@@ -175,4 +175,9 @@
   [data-sonner-toast] {
     @apply bg-popover backdrop-blur-none;
   }
+  
+  /* Monospace styling for technical data */
+  .mono-text {
+    @apply font-mono text-xs tracking-wide;
+  }
 }
