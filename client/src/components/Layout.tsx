@@ -1,6 +1,7 @@
 import { Link, useLocation } from "wouter";
-import { Home, Users, ClipboardList, BarChart3, MessageSquare } from "lucide-react";
+import { Home, Users, ClipboardList, BarChart3, MessageSquare, User } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
@@ -17,23 +18,21 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen bg-background">
       {/* Sidebar Navigation - Vital Branding */}
       <aside className="w-16 bg-sidebar border-r border-sidebar-border flex flex-col items-center py-6 gap-6">
-        {/* Vital Logo - Authentic check mark */}
-        <Link href="/" className="flex items-center justify-center px-2" data-testid="vital-logo">
-          <svg
-            width="40"
-            height="24"
-            viewBox="0 0 120 60"
-            fill="currentColor"
-            xmlns="http://www.w3.org/2000/svg"
-            className="text-sidebar-foreground dark:text-sidebar-primary"
-            aria-label="Vital"
-          >
-            <path
-              d="M 10 25 Q 15 18, 25 18 Q 35 18, 45 35 L 60 55 L 75 20 Q 85 10, 95 10 Q 105 10, 110 18 Q 105 25, 95 25 Q 85 25, 75 35 L 60 15 L 45 50 Q 35 60, 25 60 Q 15 60, 10 50 Z"
-              fillRule="evenodd"
-            />
-          </svg>
-        </Link>
+        {/* Dr. Chen Avatar */}
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Link href="/" className="flex items-center justify-center" data-testid="dr-chen-avatar">
+              <Avatar className="h-10 w-10 border-2 border-sidebar-primary">
+                <AvatarFallback className="bg-sidebar-primary text-sidebar font-medium text-sm">
+                  SC
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+          </TooltipTrigger>
+          <TooltipContent side="right">
+            Dr. Sarah Chen
+          </TooltipContent>
+        </Tooltip>
         
         <nav className="flex-1 flex flex-col gap-2 w-full">
           {navItems.map((item) => {
