@@ -147,3 +147,30 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 }
+
+@layer components {
+  /* Fix transparency issues on popups and dropdowns */
+  [data-radix-popper-content-wrapper] {
+    @apply bg-popover backdrop-blur-none;
+  }
+  
+  [role="menu"],
+  [role="listbox"],
+  [data-state="open"] > [data-radix-collection-item] {
+    @apply bg-popover backdrop-blur-none;
+  }
+  
+  /* Ensure select content and dropdown menus are solid */
+  [data-radix-select-content],
+  [data-radix-dropdown-menu-content],
+  [data-radix-context-menu-content],
+  [data-radix-hover-card-content],
+  [data-radix-popover-content] {
+    @apply bg-popover/100 backdrop-blur-none shadow-lg border border-popover-border;
+  }
+  
+  /* Solid background for toasts */
+  [data-sonner-toast] {
+    @apply bg-popover/100 backdrop-blur-none;
+  }
+}
