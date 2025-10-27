@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
+import { useLocation } from "wouter";
 
 interface Message {
   id: string;
@@ -16,6 +17,7 @@ interface Message {
 }
 
 export default function ClaraChat() {
+  const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -27,6 +29,12 @@ export default function ClaraChat() {
   ]);
   const [inputValue, setInputValue] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  
+  // Adjust button position for Messages page to avoid overlapping send button
+  const isMessagesPage = location === "/messages";
+  const buttonPosition = isMessagesPage 
+    ? "fixed bottom-20 right-6" 
+    : "fixed bottom-6 right-6";
 
   const sendMessageMutation = useMutation({
     mutationFn: async (message: string) => {
@@ -76,7 +84,7 @@ export default function ClaraChat() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105 z-50"
+          className={`${buttonPosition} w-14 h-14 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-105 z-50`}
           data-testid="button-clara-chat"
         >
           <Sparkles className="w-6 h-6" />

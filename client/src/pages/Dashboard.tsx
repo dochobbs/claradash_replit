@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { 
   ClipboardList, AlertTriangle, Users, Activity, 
-  MessageSquare, CheckCircle2, XCircle, Clock
+  MessageSquare, CheckCircle2, XCircle, Clock, Database
 } from "lucide-react";
 import Layout from "@/components/Layout";
 import StatCard from "@/components/StatCard";
@@ -10,11 +10,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { format } from "date-fns";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { queryClient, apiRequest } from "@/lib/queryClient";
 
 // Provider name for demo
 const PROVIDER_NAME = "Dr. Sarah Chen";
 
 export default function Dashboard() {
+  const { toast } = useToast();
+  const [showInitButton, setShowInitButton] = useState(false);
+
   const { data: stats, isLoading: statsLoading } = useQuery<{
     reviewsPending: number;
     escalations: number;
@@ -25,6 +31,40 @@ export default function Dashboard() {
   }>({
     queryKey: ["/api/stats"],
     refetchInterval: 30000, // Refresh every 30 seconds
+  });
+
+  // Check if database is empty (show init button if no patients)
+  const { data: patients } = useQuery({
+    queryKey: ["/api/patients"],
+    onSuccess: (data: any) => {
+      setShowInitButton(data?.length === 0);
+    }
+  });
+
+  // Initialize data mutation
+  const initializeData = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest('/api/initialize-data', {
+        method: 'POST',
+      });
+      return response;
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Data Initialized",
+        description: `Successfully added ${data.stats.patients} patients, ${data.stats.children} children, ${data.stats.interactions} interactions, and ${data.stats.reviews} reviews.`,
+      });
+      // Invalidate all queries to refresh the data
+      queryClient.invalidateQueries();
+      setShowInitButton(false);
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Initialization Failed",
+        description: error.message || "Failed to initialize sample data",
+        variant: "destructive",
+      });
+    },
   });
 
   const currentTime = new Date();
@@ -137,6 +177,25 @@ export default function Dashboard() {
                 <span className="text-xs text-muted-foreground">Active</span>
               </div>
             </div>
+
+            {/* Initialize Data Button - Only shows when database is empty */}
+            {showInitButton && (
+              <div className="mt-6 pt-4 border-t border-border">
+                <p className="text-sm text-muted-foreground mb-3">
+                  Database is empty. Initialize with sample data for demo purposes.
+                </p>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={() => initializeData.mutate()}
+                  disabled={initializeData.isPending}
+                  data-testid="button-initialize-data"
+                >
+                  <Database className="w-4 h-4 mr-2" />
+                  {initializeData.isPending ? "Initializing..." : "Initialize Sample Data"}
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

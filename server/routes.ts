@@ -336,6 +336,156 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Initialize database with sample data
+  app.post("/api/initialize-data", async (req, res) => {
+    try {
+      // Check if data already exists
+      const existingPatients = await storage.getAllPatients();
+      
+      if (existingPatients.length > 0) {
+        return res.status(400).json({ 
+          error: "Database already contains data. Initialization skipped to prevent duplicates." 
+        });
+      }
+
+      // Create sample patients
+      const patients = [
+        {
+          id: "pat-1",
+          name: "Sarah Johnson",
+          email: "sarah.johnson@email.com",
+          phoneNumber: "415-555-0123"
+        },
+        {
+          id: "pat-2", 
+          name: "Michael Chen",
+          email: "michael.chen@email.com",
+          phoneNumber: "650-555-0456"
+        },
+        {
+          id: "pat-3",
+          name: "Emily Davis",
+          email: "emily.davis@email.com",
+          phoneNumber: "510-555-0789"
+        }
+      ];
+
+      for (const patient of patients) {
+        await storage.createPatient(patient);
+      }
+
+      // Create sample children
+      const children = [
+        {
+          id: "child-1",
+          patientId: "pat-1",
+          name: "Emma Johnson",
+          dateOfBirth: new Date("2019-05-15"),
+          medicalRecordNumber: "MRN-2019-0515"
+        },
+        {
+          id: "child-2",
+          patientId: "pat-2",
+          name: "Lucas Chen",
+          dateOfBirth: new Date("2018-11-20"),
+          medicalRecordNumber: "MRN-2018-1120"
+        },
+        {
+          id: "child-3",
+          patientId: "pat-3",
+          name: "Sophia Davis",
+          dateOfBirth: new Date("2020-03-08"),
+          medicalRecordNumber: "MRN-2020-0308"
+        }
+      ];
+
+      for (const child of children) {
+        await storage.createChild(child);
+      }
+
+      // Create sample AI interactions
+      const interactions = [
+        {
+          id: "int-1",
+          patientId: "pat-1",
+          childId: "child-1",
+          parentConcern: "Emma has had a persistent cough for 3 days with mild fever (100.4°F). No difficulty breathing.",
+          aiResponse: "Based on symptoms: likely viral upper respiratory infection. Monitor temperature, ensure hydration. Red flags: difficulty breathing, fever >104°F, lethargy. Schedule appointment if symptoms worsen or persist beyond 7 days.",
+          contextData: JSON.stringify({
+            urgencyLevel: "low",
+            symptoms: ["cough", "mild fever"],
+            duration: "3 days"
+          })
+        },
+        {
+          id: "int-2",
+          patientId: "pat-2",
+          childId: "child-2",
+          parentConcern: "Lucas has been complaining of ear pain since yesterday. He's been tugging at his right ear.",
+          aiResponse: "Symptoms suggest possible ear infection. Recommend evaluation within 24-48 hours for otoscopic examination. Pain management with age-appropriate acetaminophen. Watch for fever, drainage, or worsening pain.",
+          contextData: JSON.stringify({
+            urgencyLevel: "medium",
+            symptoms: ["ear pain", "ear tugging"],
+            duration: "1 day"
+          })
+        },
+        {
+          id: "int-3",
+          patientId: "pat-3",
+          childId: "child-3",
+          parentConcern: "Sophia developed a rash on her trunk this morning. No fever, eating normally.",
+          aiResponse: "Non-febrile rash requires visual assessment. If spreading, developing blisters, or accompanied by other symptoms, seek evaluation. Continue monitoring. Document rash progression with photos if possible.",
+          contextData: JSON.stringify({
+            urgencyLevel: "low",
+            symptoms: ["rash", "trunk"],
+            duration: "< 1 day"
+          })
+        }
+      ];
+
+      for (const interaction of interactions) {
+        await storage.createAiInteraction(interaction);
+      }
+
+      // Create some sample reviews
+      const reviews = [
+        {
+          id: "rev-1",
+          interactionId: "int-1",
+          providerId: "dr-chen",
+          reviewDecision: "agree" as const,
+          providerNotes: "Appropriate triage advice for viral URI. Good safety netting provided.",
+          reviewedAt: new Date()
+        },
+        {
+          id: "rev-2",
+          interactionId: "int-2",
+          providerId: "dr-chen",
+          reviewDecision: "agree_with_thoughts" as const,
+          providerNotes: "Agree with assessment. Would add: consider checking for recent URI symptoms. May benefit from earlier evaluation if pain severe.",
+          reviewedAt: new Date()
+        }
+      ];
+
+      for (const review of reviews) {
+        await storage.createProviderReview(review);
+      }
+
+      res.json({ 
+        message: "Sample data initialized successfully",
+        stats: {
+          patients: patients.length,
+          children: children.length,
+          interactions: interactions.length,
+          reviews: reviews.length
+        }
+      });
+    } catch (error) {
+      console.error("Error initializing data:", error);
+      res.status(500).json({ error: "Failed to initialize sample data" });
+    }
+  });
+
   // Clara AI Chat endpoint
   app.post("/api/clara/chat", async (req, res) => {
     try {
