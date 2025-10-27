@@ -16,31 +16,23 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <div className="flex h-screen bg-background">
       {/* Sidebar Navigation - Vital Branding */}
       <aside className="w-16 bg-sidebar border-r border-sidebar-border flex flex-col items-center py-6 gap-6">
-        {/* Vital Logo & Wordmark */}
-        <div className="flex flex-col items-center gap-2" data-testid="vital-logo">
-          {/* Vital wave mark */}
+        {/* Vital Logo - Authentic check mark */}
+        <Link href="/" className="flex items-center justify-center px-2" data-testid="vital-logo">
           <svg
-            width="36"
-            height="20"
-            viewBox="0 0 36 20"
-            fill="none"
+            width="40"
+            height="24"
+            viewBox="0 0 120 60"
+            fill="currentColor"
             xmlns="http://www.w3.org/2000/svg"
-            className="text-sidebar-primary"
+            className="text-sidebar-foreground dark:text-sidebar-primary"
+            aria-label="Vital"
           >
             <path
-              d="M2 18 C6 10, 10 2, 14 6 C18 10, 22 2, 26 6 C30 10, 32 18, 34 18"
-              stroke="currentColor"
-              strokeWidth="3"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              fill="none"
+              d="M 10 25 Q 15 18, 25 18 Q 35 18, 45 35 L 60 55 L 75 20 Q 85 10, 95 10 Q 105 10, 110 18 Q 105 25, 95 25 Q 85 25, 75 35 L 60 15 L 45 50 Q 35 60, 25 60 Q 15 60, 10 50 Z"
+              fillRule="evenodd"
             />
           </svg>
-          {/* Vital text */}
-          <span className="text-[10px] font-bold tracking-wider text-sidebar-foreground">
-            VITAL
-          </span>
-        </div>
+        </Link>
         
         <nav className="flex-1 flex flex-col gap-2 w-full">
           {navItems.map((item) => {
@@ -56,6 +48,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       className={`
                         w-full h-12 flex items-center justify-center
                         transition-colors relative group
+                        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-primary focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar
                         ${isActive 
                           ? 'text-sidebar-primary' 
                           : 'text-sidebar-foreground hover:text-sidebar-accent-foreground'
