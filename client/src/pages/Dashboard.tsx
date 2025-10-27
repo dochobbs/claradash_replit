@@ -44,22 +44,9 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-muted-foreground mb-2">
+            <p className="text-sm text-muted-foreground">
               Clinical AI Review Dashboard
             </p>
-            <div className="flex gap-2 justify-end">
-              <Link href="/reviews">
-                <Button className="bg-primary hover:bg-primary/90" data-testid="button-review-queue">
-                  <ClipboardList className="w-4 h-4 mr-2" />
-                  Review Queue
-                  {stats?.reviewsPending && stats.reviewsPending > 0 && (
-                    <span className="ml-2 px-2 py-0.5 text-xs rounded-full bg-white text-primary">
-                      {stats.reviewsPending}
-                    </span>
-                  )}
-                </Button>
-              </Link>
-            </div>
           </div>
         </div>
 
