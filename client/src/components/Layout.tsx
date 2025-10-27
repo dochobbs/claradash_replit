@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Home, Users, ClipboardList, BarChart3, MessageSquare, User } from "lucide-react";
+import { Home, Users, ClipboardList, BarChart3, MessageSquare, AlertTriangle, User } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useQuery } from "@tanstack/react-query";
@@ -21,7 +21,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     { path: "/", icon: Home, label: "Dashboard" },
     { path: "/patients", icon: Users, label: "Patients" },
     { path: "/reviews", icon: ClipboardList, label: "Reviews", badge: badges?.reviewsPending, color: "bg-yellow-500" },
-    { path: "/escalations", icon: MessageSquare, label: "Escalations", badge: badges?.escalationsActive, color: "bg-coral" },
+    { path: "/escalations", icon: AlertTriangle, label: "Escalations", badge: badges?.escalationsActive, color: "bg-coral" },
+    { path: "/messages", icon: MessageSquare, label: "Messages", badge: badges?.messagesUnread, color: "bg-teal-500" },
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ];
 

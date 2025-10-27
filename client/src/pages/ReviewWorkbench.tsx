@@ -273,7 +273,7 @@ export default function ReviewWorkbench() {
                               {interaction.parentConcern}
                             </p>
 
-                            {interaction.reviews && interaction.reviews[0] && (
+                            {interaction.reviews && interaction.reviews[0] && interaction.reviews[0].reviewedAt && (
                               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                 <Clock className="w-3 h-3" />
                                 <span>
