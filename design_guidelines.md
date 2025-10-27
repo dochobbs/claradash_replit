@@ -1,10 +1,10 @@
-# Design Guidelines: Clinical AI Review Dashboard
+# Design Guidelines: Vital Provider Dashboard
 
 ## Design Approach
 
-**Selected Approach:** Design System - Clinical Productivity Focus
+**Selected Approach:** Bauhaus-Inspired Functional Design
 
-This dashboard follows principles from **Carbon Design System** (data-heavy enterprise applications) and **Material Design** (structured medical information), adapted for clinical workflows. The design prioritizes information density, scanning efficiency, and task completion speed over visual flourish.
+This dashboard follows **Vital's Bauhaus-inspired design philosophy**: "Designed for care, built for trust." Drawing from the Bauhaus movement's emphasis on clarity, precision, and utility, the design strips away the ornamental and unnecessary, prioritizing function over flash.
 
 **Key Design Principles:**
 1. **Information Hierarchy First:** Critical medical data must be immediately scannable
@@ -18,9 +18,9 @@ This dashboard follows principles from **Carbon Design System** (data-heavy ente
 
 ### A. Typography
 
-**Font Family:** 
-- Primary: Inter (via Google Fonts CDN)
-- Monospace: JetBrains Mono (for IDs, timestamps, codes)
+**Font Family (Vital Brand):**
+- Primary: Geist (via Google Fonts CDN) - Designed for clarity, holds up in small sizes, reads smoothly in longer blocks
+- Monospace: Geist Mono (for IDs, timestamps, codes)
 
 **Type Scale:**
 - Page Headers: text-2xl (24px), font-semibold

@@ -14,10 +14,32 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Sidebar Navigation */}
+      {/* Sidebar Navigation - Vital Branding */}
       <aside className="w-16 bg-sidebar border-r border-sidebar-border flex flex-col items-center py-6 gap-6">
-        <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-          <ClipboardList className="w-6 h-6 text-primary-foreground" />
+        {/* Vital Logo & Wordmark */}
+        <div className="flex flex-col items-center gap-2" data-testid="vital-logo">
+          {/* Vital wave mark */}
+          <svg
+            width="36"
+            height="20"
+            viewBox="0 0 36 20"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="text-sidebar-primary"
+          >
+            <path
+              d="M2 18 C6 10, 10 2, 14 6 C18 10, 22 2, 26 6 C30 10, 32 18, 34 18"
+              stroke="currentColor"
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fill="none"
+            />
+          </svg>
+          {/* Vital text */}
+          <span className="text-[10px] font-bold tracking-wider text-sidebar-foreground">
+            VITAL
+          </span>
         </div>
         
         <nav className="flex-1 flex flex-col gap-2 w-full">

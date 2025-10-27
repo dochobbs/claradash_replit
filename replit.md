@@ -1,7 +1,7 @@
-# Clinical AI Review Dashboard
+# Vital Provider Dashboard
 
 ## Overview
-A professional web dashboard for medical providers to review and document AI-assisted clinical interactions. This application serves as both an EMR (Electronic Medical Record) system and an active workspace for evaluating pediatric AI consultations.
+A Bauhaus-inspired web dashboard for medical providers to review and document AI-assisted clinical interactions. Designed with Vital's philosophy: "Designed for care, built for trust." This application serves as both an EMR (Electronic Medical Record) system and an active workspace for evaluating pediatric AI consultations.
 
 ## Purpose
 - **Primary Goal**: Enable medical providers to review AI interactions between parents and a clinical AI agent
@@ -115,6 +115,13 @@ ai_interactions (1) ─── (many) provider_reviews
 5. Added seed data for testing and development
 6. Fixed TanStack Query implementation to properly handle dynamic routes
 7. Added data-testid attributes for E2E testing support
+8. **Vital Branding Integration**:
+   - Updated color palette to Vital's yellow/coral/neutral scheme
+   - Switched to Geist typography (Google Fonts)
+   - Added Vital wave mark logo and wordmark to sidebar
+   - Ensured WCAG AA compliance (dark text on bright yellow/coral accents)
+   - Updated ReviewBadge with Vital color semantics (yellow=agree, teal=agree with thoughts, coral=needs escalation)
+   - Applied Bauhaus minimalism principles throughout UI
 
 ## Running the Project
 ```bash

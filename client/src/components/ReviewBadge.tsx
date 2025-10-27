@@ -9,22 +9,22 @@ const badgeConfig = {
   agree: {
     label: "Agree",
     icon: Check,
-    className: "bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800",
+    className: "bg-[hsl(42,70%,92%)] dark:bg-[hsl(42,70%,15%)] text-[hsl(42,70%,30%)] dark:text-[hsl(42,70%,70%)] border-[hsl(42,70%,80%)] dark:border-[hsl(42,70%,25%)]",
   },
   agree_with_thoughts: {
     label: "Agree w/ Thoughts",
     icon: MessageSquare,
-    className: "bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800",
+    className: "bg-[hsl(170,45%,92%)] dark:bg-[hsl(170,45%,15%)] text-[hsl(170,45%,30%)] dark:text-[hsl(170,45%,65%)] border-[hsl(170,45%,80%)] dark:border-[hsl(170,45%,25%)]",
   },
   disagree: {
     label: "Disagree",
     icon: X,
-    className: "bg-orange-50 dark:bg-orange-950 text-orange-700 dark:text-orange-300 border-orange-200 dark:border-orange-800",
+    className: "bg-[hsl(0,0%,90%)] dark:bg-[hsl(0,0%,18%)] text-[hsl(0,0%,35%)] dark:text-[hsl(0,0%,70%)] border-[hsl(0,0%,78%)] dark:border-[hsl(0,0%,28%)]",
   },
   needs_escalation: {
     label: "Needs Escalation",
     icon: AlertTriangle,
-    className: "bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800",
+    className: "bg-[hsl(7,73%,92%)] dark:bg-[hsl(7,73%,18%)] text-[hsl(7,73%,35%)] dark:text-[hsl(7,73%,70%)] border-[hsl(7,73%,80%)] dark:border-[hsl(7,73%,30%)]",
   },
 };
 
