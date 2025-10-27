@@ -52,10 +52,23 @@ export default function PatientCard({
               <User className="w-5 h-5 text-muted-foreground" />
             </div>
             <div>
-              <h3 className="text-base font-medium text-foreground" data-testid={`text-patient-name-${patient.id}`}>
-                {patient.name}
-              </h3>
-              <p className="text-xs text-muted-foreground">{patient.email}</p>
+              {patient.children && patient.children.length > 0 ? (
+                <>
+                  <h3 className="text-base font-medium text-foreground" data-testid={`text-patient-name-${patient.id}`}>
+                    {patient.children.map(c => c.name).join(", ")}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    Parent: {patient.name}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-base font-medium text-foreground" data-testid={`text-patient-name-${patient.id}`}>
+                    {patient.name}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">{patient.email}</p>
+                </>
+              )}
             </div>
           </div>
           <span className="text-xs font-medium px-2 py-1 rounded bg-muted text-muted-foreground">
@@ -65,18 +78,25 @@ export default function PatientCard({
 
         {patient.children && patient.children.length > 0 && (
           <div className="mb-3 pt-3 border-t border-border">
-            <p className="text-xs uppercase tracking-wide text-muted-foreground mb-1.5">
-              Children
-            </p>
             <div className="space-y-1">
               {patient.children.map((child) => (
                 <div key={child.id} className="flex items-center justify-between">
-                  <span className="text-sm text-foreground">{child.name}</span>
+                  <div>
+                    <span className="text-sm text-foreground">{child.name}</span>
+                    <span className="text-xs text-muted-foreground ml-2">
+                      Age {new Date().getFullYear() - new Date(child.dateOfBirth).getFullYear()}
+                    </span>
+                  </div>
                   <span className="text-xs font-mono text-muted-foreground">
                     MRN: {child.medicalRecordNumber}
                   </span>
                 </div>
               ))}
+            </div>
+            <div className="mt-2 pt-2 border-t border-border/50">
+              <p className="text-xs text-muted-foreground">
+                <span className="font-medium">Contact:</span> {patient.email} • {patient.phone}
+              </p>
             </div>
           </div>
         )}
