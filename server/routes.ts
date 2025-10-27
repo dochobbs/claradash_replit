@@ -8,6 +8,7 @@ import {
   insertProviderReviewSchema,
   insertMessageSchema
 } from "@shared/schema";
+import OpenAI from "openai";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Stats endpoint
@@ -332,6 +333,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating message:", error);
       res.status(400).json({ error: "Invalid message data" });
+    }
+  });
+
+  // Clara AI Chat endpoint
+  app.post("/api/clara/chat", async (req, res) => {
+    try {
+      const { message } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ error: "Message is required" });
+      }
+
+      // Initialize OpenAI with Replit AI Integrations
+      const openai = new OpenAI({
+        baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+        apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+      });
+
+      // Create a system prompt for Clara as a medical AI assistant
+      const systemPrompt = `You are Clara, an AI assistant for medical providers working with the Vital pediatric EMR system. 
+      You help with:
+      - Clinical decision support (CDS) for pediatric cases
+      - Searching medical information and guidelines
+      - Answering questions about patient workflows
+      - Providing quick medical reference information
+      
+      Always be concise, professional, and focus on evidence-based medical guidance. 
+      Remember you are assisting qualified medical professionals, not providing direct patient care.
+      Keep responses brief and actionable.`;
+
+      const completion = await openai.chat.completions.create({
+        model: "gpt-4.1-mini",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: message }
+        ],
+        temperature: 0.7,
+        max_tokens: 500,
+      });
+
+      const response = completion.choices[0]?.message?.content || "I apologize, but I couldn't generate a response. Please try again.";
+
+      res.json({ response });
+    } catch (error) {
+      console.error("Error in Clara AI chat:", error);
+      res.status(500).json({ error: "Failed to process chat message" });
     }
   });
 
