@@ -22,6 +22,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Layout from "@/components/Layout";
 import type { AiInteractionWithDetails, InsertProviderReview } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
@@ -122,19 +123,10 @@ export default function ReviewWorkbench() {
   };
 
   return (
-    <div className="flex h-screen bg-background">
-      {/* Top Bar */}
-      <div className="fixed top-0 right-0 left-16 h-14 bg-background border-b border-border flex items-center justify-between px-6 z-10">
-        <div className="text-sm text-muted-foreground">
-          Good {currentTime.getHours() < 12 ? 'morning' : currentTime.getHours() < 18 ? 'afternoon' : 'evening'}, {PROVIDER_NAME}
-        </div>
-        <div className="text-sm text-muted-foreground">
-          {format(currentTime, 'EEEE, MMMM d, yyyy')}
-        </div>
-      </div>
-
-      {/* Main Content - Three Panels */}
-      <div className="flex flex-1 pt-14">
+    <Layout>
+      <div className="flex h-[calc(100vh-3.5rem)] bg-background">
+        {/* Main Content - Three Panels */}
+        <div className="flex flex-1">
         {/* Left Panel - Review Queue */}
         <div className="w-96 border-r border-border bg-muted/30">
           <div className="p-4 border-b border-border">
@@ -478,5 +470,6 @@ export default function ReviewWorkbench() {
         </div>
       </div>
     </div>
+    </Layout>
   );
 }
