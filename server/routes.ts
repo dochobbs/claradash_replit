@@ -71,11 +71,68 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Analytics endpoint for charts
+  app.get("/api/analytics", async (_req, res) => {
+    try {
+      const allInteractions = await storage.getAllAiInteractionsWithDetails();
+      
+      // Calculate review outcomes
+      const allReviews = allInteractions.flatMap((interaction) => interaction.reviews);
+      const agreeCount = allReviews.filter(
+        (review) => review.reviewDecision === "agree"
+      ).length;
+      const agreeWithThoughtsCount = allReviews.filter(
+        (review) => review.reviewDecision === "agree_with_thoughts"
+      ).length;
+      const disagreeCount = allReviews.filter(
+        (review) => review.reviewDecision === "disagree"
+      ).length;
+      const needsEscalationCount = allReviews.filter(
+        (review) => review.reviewDecision === "needs_escalation"
+      ).length;
+
+      const reviewOutcomes = [
+        { name: "Agree", value: agreeCount, color: "#FFD54F" },
+        { name: "Agree with Thoughts", value: agreeWithThoughtsCount, color: "#26A69A" },
+        { name: "Disagree", value: disagreeCount, color: "#FF6B6B" },
+        { name: "Needs Escalation", value: needsEscalationCount, color: "#EF5350" },
+      ];
+
+      // Calculate time metrics (simulated data for now)
+      const timeMetrics = [
+        { name: "Mon", waitTime: 12, reviewTime: 8, escalationTime: 35 },
+        { name: "Tue", waitTime: 18, reviewTime: 10, escalationTime: 42 },
+        { name: "Wed", waitTime: 15, reviewTime: 7, escalationTime: 38 },
+        { name: "Thu", waitTime: 20, reviewTime: 9, escalationTime: 50 },
+        { name: "Fri", waitTime: 14, reviewTime: 6, escalationTime: 45 },
+        { name: "Sat", waitTime: 10, reviewTime: 5, escalationTime: 30 },
+        { name: "Sun", waitTime: 8, reviewTime: 4, escalationTime: 25 },
+      ];
+
+      // Calculate average times
+      const stats = {
+        totalReviews: allReviews.length,
+        avgWaitTime: 15, // minutes (simulated)
+        avgReviewTime: 8, // minutes (simulated)
+        avgEscalationTime: 45, // minutes (simulated)
+      };
+
+      res.json({
+        reviewOutcomes,
+        timeMetrics,
+        stats,
+      });
+    } catch (error) {
+      console.error("Error fetching analytics:", error);
+      res.status(500).json({ error: "Failed to fetch analytics" });
+    }
+  });
+
   // Badge counts endpoint for sidebar
   app.get("/api/stats/badges", async (_req, res) => {
     try {
       const allInteractions = await storage.getAllAiInteractionsWithDetails();
-      const allMessages = await storage.getAllMessages();
+      const allEscalations = await storage.getAllEscalationsWithDetails();
 
       const reviewsPending = allInteractions.filter(
         (interaction) => interaction.reviews.length === 0
@@ -85,10 +142,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         interaction.reviews.some((review) => review.reviewDecision === "needs_escalation")
       ).length;
 
-      // Count unread messages (messages from parents that haven't been replied to)
-      const messagesUnread = allMessages.filter((message) => 
-        message.senderRole === "parent" && !message.isRead
-      ).length;
+      // Count unread messages from all escalations
+      const messagesUnread = allEscalations.reduce((count, escalation) => {
+        const unreadCount = escalation.messages?.filter(
+          (message) => message.senderRole === "parent" && !message.isRead
+        ).length || 0;
+        return count + unreadCount;
+      }, 0);
 
       res.json({
         reviewsPending,
