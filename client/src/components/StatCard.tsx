@@ -10,11 +10,12 @@ interface StatCardProps {
     positive: boolean;
   };
   testId?: string;
+  className?: string;
 }
 
-export default function StatCard({ label, value, icon: Icon, trend, testId }: StatCardProps) {
+export default function StatCard({ label, value, icon: Icon, trend, testId, className }: StatCardProps) {
   return (
-    <Card data-testid={testId}>
+    <Card data-testid={testId} className={className}>
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="flex-1">
