@@ -149,48 +149,109 @@
 }
 
 @layer components {
-  /* Fix transparency issues on popups and dropdowns */
-  [data-radix-popper-content-wrapper] {
-    @apply bg-popover backdrop-blur-none;
+  /* Fix transparency issues on popups and dropdowns - COMPREHENSIVE FIX */
+  [data-radix-popper-content-wrapper],
+  [data-radix-popper-content-wrapper] * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: hsl(var(--popover)) !important;
+    opacity: 1 !important;
   }
   
   [role="menu"],
   [role="listbox"],
   [data-state="open"] > [data-radix-collection-item] {
-    @apply bg-popover backdrop-blur-none;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: hsl(var(--popover)) !important;
+    opacity: 1 !important;
   }
   
-  /* Ensure select content and dropdown menus are solid */
+  /* Ensure ALL Radix UI components have solid backgrounds */
   [data-radix-select-content],
   [data-radix-dropdown-menu-content],
   [data-radix-context-menu-content],
   [data-radix-hover-card-content],
-  [data-radix-popover-content] {
-    @apply bg-popover backdrop-blur-none shadow-lg border;
+  [data-radix-popover-content],
+  [data-radix-dialog-content],
+  [data-radix-tooltip-content],
+  [data-radix-menubar-content],
+  [data-radix-navigation-menu-content] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     background-color: hsl(var(--popover)) !important;
-    border-color: hsl(var(--popover-border));
+    border-color: hsl(var(--popover-border)) !important;
+    opacity: 1 !important;
+    @apply shadow-lg border;
   }
   
   /* Specifically target select viewport and listbox */
   [data-radix-select-viewport],
-  [role="listbox"] {
+  [data-radix-select-viewport] *,
+  [role="listbox"],
+  [role="listbox"] * {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     background-color: hsl(var(--popover)) !important;
-    @apply backdrop-blur-none;
+    opacity: 1 !important;
   }
   
-  /* Ensure select options have solid backgrounds */
-  [role="option"] {
-    background-color: transparent;
+  /* Ensure select options and menu items have proper backgrounds */
+  [role="option"],
+  [role="menuitem"],
+  [data-radix-collection-item] {
+    background-color: transparent !important;
+    opacity: 1 !important;
   }
   
   [role="option"]:hover,
-  [role="option"]:focus {
-    background-color: hsl(var(--accent));
+  [role="option"]:focus,
+  [role="option"][data-highlighted],
+  [role="menuitem"]:hover,
+  [role="menuitem"]:focus,
+  [role="menuitem"][data-highlighted],
+  [data-radix-collection-item]:hover,
+  [data-radix-collection-item]:focus {
+    background-color: hsl(var(--accent)) !important;
+    opacity: 1 !important;
   }
   
   /* Solid background for toasts */
-  [data-sonner-toast] {
-    @apply bg-popover backdrop-blur-none;
+  [data-sonner-toast],
+  .sonner-toast {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: hsl(var(--popover)) !important;
+    opacity: 1 !important;
+  }
+  
+  /* Fix dialog overlays and content */
+  [data-radix-dialog-overlay] {
+    background-color: rgba(0, 0, 0, 0.8) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  /* Override any backdrop-blur or transparency classes */
+  .backdrop-blur,
+  .backdrop-blur-sm,
+  .backdrop-blur-md,
+  .backdrop-blur-lg,
+  .backdrop-blur-xl {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+  
+  /* Ensure shadcn components have solid backgrounds */
+  .ui-select-content,
+  .ui-dropdown-menu-content,
+  .ui-popover-content,
+  .ui-dialog-content,
+  .ui-tooltip-content {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background-color: hsl(var(--popover)) !important;
+    opacity: 1 !important;
   }
   
   /* Monospace styling for technical data */

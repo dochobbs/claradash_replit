@@ -10,6 +10,7 @@ import Reviews from "@/pages/Reviews";
 import ReviewWorkbench from "@/pages/ReviewWorkbench";
 import Escalations from "@/pages/Escalations";
 import Analytics from "@/pages/Analytics";
+import Messages from "@/pages/Messages";
 import NotFound from "@/pages/not-found";
 import ClaraChat from "@/components/ClaraChat";
 
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/reviews" component={ReviewWorkbench} />
       <Route path="/review-workbench" component={ReviewWorkbench} />
       <Route path="/escalations" component={Escalations} />
+      <Route path="/messages" component={Messages} />
       <Route path="/analytics" component={Analytics} />
       <Route component={NotFound} />
     </Switch>
