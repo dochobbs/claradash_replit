@@ -41,8 +41,7 @@ export default function PatientCard({
       onClick={onClick}
       className={`
         border-l-4 cursor-pointer
-        transition-all duration-200
-        hover:shadow-md hover:scale-[1.01]
+        hover:bg-muted/30 transition-colors
         ${config.className}
       `}
     >
