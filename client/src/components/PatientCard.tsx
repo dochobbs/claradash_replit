@@ -95,7 +95,7 @@ export default function PatientCard({
             </div>
             <div className="mt-2 pt-2 border-t border-border/50">
               <p className="text-xs text-muted-foreground">
-                <span className="font-medium">Contact:</span> {patient.email} • {patient.phone}
+                <span className="font-medium">Contact:</span> {patient.email} • <a href={`tel:${patient.phone}`} className="hover:underline">{patient.phone}</a>
               </p>
             </div>
           </div>

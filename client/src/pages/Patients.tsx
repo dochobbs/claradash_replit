@@ -46,6 +46,25 @@ export default function Patients() {
           </p>
         </div>
 
+        {/* Status Legend */}
+        <div className="mb-6 p-4 bg-muted/30 rounded-lg border border-border">
+          <p className="text-xs uppercase tracking-wide text-muted-foreground mb-3 font-medium">Patient Status Indicators</p>
+          <div className="flex flex-wrap gap-6 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-4 bg-emerald-500 rounded-full"></div>
+              <span className="text-foreground">Active</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-4 bg-amber-500 rounded-full"></div>
+              <span className="text-foreground">Review Pending</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-4 bg-red-500 rounded-full"></div>
+              <span className="text-foreground">Needs Escalation</span>
+            </div>
+          </div>
+        </div>
+
         {/* Search */}
         <div className="mb-6">
           <div className="relative max-w-md">
