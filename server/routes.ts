@@ -5,7 +5,8 @@ import {
   insertPatientSchema, 
   insertChildSchema, 
   insertAiInteractionSchema, 
-  insertProviderReviewSchema 
+  insertProviderReviewSchema,
+  insertMessageSchema
 } from "@shared/schema";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -197,6 +198,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error creating review:", error);
       res.status(400).json({ error: "Invalid review data" });
+    }
+  });
+
+  // Escalations endpoints
+  app.get("/api/escalations", async (_req, res) => {
+    try {
+      const escalations = await storage.getAllEscalationsWithDetails();
+      res.json(escalations);
+    } catch (error) {
+      console.error("Error fetching escalations:", error);
+      res.status(500).json({ error: "Failed to fetch escalations" });
+    }
+  });
+
+  app.patch("/api/escalations/:id", async (req, res) => {
+    try {
+      const escalation = await storage.updateEscalation(req.params.id, req.body);
+      res.json(escalation);
+    } catch (error) {
+      console.error("Error updating escalation:", error);
+      res.status(500).json({ error: "Failed to update escalation" });
+    }
+  });
+
+  // Messages endpoints
+  app.post("/api/messages", async (req, res) => {
+    try {
+      const validatedData = insertMessageSchema.parse(req.body);
+      const message = await storage.createMessage(validatedData);
+      res.status(201).json(message);
+    } catch (error) {
+      console.error("Error creating message:", error);
+      res.status(400).json({ error: "Invalid message data" });
     }
   });
 

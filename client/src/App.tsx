@@ -8,6 +8,7 @@ import Patients from "@/pages/Patients";
 import PatientDetail from "@/pages/PatientDetail";
 import Reviews from "@/pages/Reviews";
 import ReviewWorkbench from "@/pages/ReviewWorkbench";
+import Escalations from "@/pages/Escalations";
 import Analytics from "@/pages/Analytics";
 import NotFound from "@/pages/not-found";
 
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/patients" component={Patients} />
       <Route path="/patients/:id" component={PatientDetail} />
       <Route path="/reviews" component={ReviewWorkbench} />
+      <Route path="/escalations" component={Escalations} />
       <Route path="/analytics" component={Analytics} />
       <Route component={NotFound} />
     </Switch>

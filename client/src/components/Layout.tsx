@@ -1,5 +1,5 @@
 import { Link, useLocation } from "wouter";
-import { Home, Users, ClipboardList, BarChart3 } from "lucide-react";
+import { Home, Users, ClipboardList, BarChart3, MessageSquare } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -9,6 +9,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     { path: "/", icon: Home, label: "Dashboard" },
     { path: "/patients", icon: Users, label: "Patients" },
     { path: "/reviews", icon: ClipboardList, label: "Reviews" },
+    { path: "/escalations", icon: MessageSquare, label: "Escalations" },
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
   ];
 

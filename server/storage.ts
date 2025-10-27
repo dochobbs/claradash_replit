@@ -7,6 +7,8 @@ import {
   medications,
   allergies,
   problemList,
+  escalations,
+  messages,
   type Patient, 
   type InsertPatient,
   type Child,
@@ -20,6 +22,11 @@ import {
   type Medication,
   type Allergy,
   type ProblemListItem,
+  type Escalation,
+  type InsertEscalation,
+  type Message,
+  type InsertMessage,
+  type EscalationWithMessages,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc } from "drizzle-orm";
@@ -58,6 +65,14 @@ export interface IStorage {
     allergies: Allergy[];
     problemList: ProblemListItem[];
   }>;
+
+  // Escalations and Messages
+  getAllEscalationsWithDetails(): Promise<EscalationWithMessages[]>;
+  getEscalation(id: string): Promise<Escalation | undefined>;
+  createEscalation(escalation: InsertEscalation): Promise<Escalation>;
+  updateEscalation(id: string, data: Partial<Escalation>): Promise<Escalation>;
+  getMessagesByEscalation(escalationId: string): Promise<Message[]>;
+  createMessage(message: InsertMessage): Promise<Message>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -275,6 +290,74 @@ export class DatabaseStorage implements IStorage {
       allergies: allergyList,
       problemList: problems,
     };
+  }
+
+  // Escalations and Messages
+  async getEscalation(id: string): Promise<Escalation | undefined> {
+    const [escalation] = await db
+      .select()
+      .from(escalations)
+      .where(eq(escalations.id, id));
+    return escalation || undefined;
+  }
+
+  async getAllEscalationsWithDetails(): Promise<EscalationWithMessages[]> {
+    const allEscalations = await db
+      .select()
+      .from(escalations)
+      .orderBy(desc(escalations.createdAt));
+
+    const escalationsWithDetails = await Promise.all(
+      allEscalations.map(async (escalation) => {
+        const interaction = await this.getAiInteractionWithDetails(escalation.interactionId);
+        const messageList = await this.getMessagesByEscalation(escalation.id);
+        
+        if (!interaction) {
+          throw new Error(`Missing interaction for escalation ${escalation.id}`);
+        }
+
+        return {
+          ...escalation,
+          messages: messageList,
+          interaction,
+        };
+      })
+    );
+
+    return escalationsWithDetails;
+  }
+
+  async createEscalation(insertEscalation: InsertEscalation): Promise<Escalation> {
+    const [escalation] = await db
+      .insert(escalations)
+      .values(insertEscalation)
+      .returning();
+    return escalation;
+  }
+
+  async updateEscalation(id: string, data: Partial<Escalation>): Promise<Escalation> {
+    const [updated] = await db
+      .update(escalations)
+      .set(data)
+      .where(eq(escalations.id, id))
+      .returning();
+    return updated;
+  }
+
+  async getMessagesByEscalation(escalationId: string): Promise<Message[]> {
+    return await db
+      .select()
+      .from(messages)
+      .where(eq(messages.escalationId, escalationId))
+      .orderBy(messages.createdAt);
+  }
+
+  async createMessage(insertMessage: InsertMessage): Promise<Message> {
+    const [message] = await db
+      .insert(messages)
+      .values(insertMessage)
+      .returning();
+    return message;
   }
 }
 
