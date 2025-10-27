@@ -48,11 +48,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
+      // Count agrees and disagrees from all reviews
+      const allReviews = allInteractions.flatMap((interaction) => interaction.reviews);
+      const agreesCount = allReviews.filter(
+        (review) => review.reviewDecision === "agree" || review.reviewDecision === "agree_with_thoughts"
+      ).length;
+      const disagreesCount = allReviews.filter(
+        (review) => review.reviewDecision === "disagree"
+      ).length;
+
       res.json({
         reviewsPending,
         escalations,
         activePatients,
         avgResponseTime,
+        agreesCount,
+        disagreesCount,
       });
     } catch (error) {
       console.error("Error fetching stats:", error);

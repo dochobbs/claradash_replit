@@ -1,5 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
-import { ClipboardList, AlertTriangle, Users, Activity } from "lucide-react";
+import { 
+  ClipboardList, AlertTriangle, Users, Activity, 
+  MessageSquare, CheckCircle2, XCircle, Clock
+} from "lucide-react";
 import Layout from "@/components/Layout";
 import StatCard from "@/components/StatCard";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,6 +20,8 @@ export default function Dashboard() {
     escalations: number;
     activePatients: number;
     avgResponseTime: string;
+    agreesCount: number;
+    disagreesCount: number;
   }>({
     queryKey: ["/api/stats"],
     refetchInterval: 30000, // Refresh every 30 seconds
@@ -58,11 +63,11 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Stats Grid - Simplified */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        {/* Stats Grid - Enhanced with Review Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {statsLoading ? (
             <>
-              {[...Array(3)].map((_, i) => (
+              {[...Array(4)].map((_, i) => (
                 <Card key={i}>
                   <CardContent className="p-6">
                     <Skeleton className="h-20 w-full" />
@@ -93,38 +98,78 @@ export default function Dashboard() {
                 testId="stat-active-patients"
                 className="border-l-4 border-l-teal"
               />
+              <Card className="border-l-4 border-l-green-500">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground">Review Outcomes</p>
+                      <div className="flex gap-4 mt-2">
+                        <div className="flex items-center gap-1">
+                          <CheckCircle2 className="w-4 h-4 text-green-600" />
+                          <span className="text-lg font-bold" data-testid="stat-agrees">{stats?.agreesCount || 0}</span>
+                          <span className="text-xs text-muted-foreground">Agrees</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <XCircle className="w-4 h-4 text-coral" />
+                          <span className="text-lg font-bold" data-testid="stat-disagrees">{stats?.disagreesCount || 0}</span>
+                          <span className="text-xs text-muted-foreground">Disagrees</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </>
           )}
         </div>
 
-        {/* Quick Actions */}
+        {/* Quick Actions - Distinct Functions */}
         <Card className="mb-8">
           <CardContent className="p-6">
             <h2 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <Link href="/reviews">
-                <Button variant="outline" className="w-full justify-start" data-testid="button-pending-reviews">
-                  <ClipboardList className="w-4 h-4 mr-2" />
-                  View Pending Reviews
-                  {stats?.reviewsPending && stats.reviewsPending > 0 && (
-                    <span className="ml-auto text-xs px-2 py-0.5 rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300">
-                      {stats.reviewsPending}
-                    </span>
-                  )}
+                <Button variant="outline" className="w-full justify-start h-auto flex-col items-start p-4" data-testid="button-start-reviewing">
+                  <div className="flex items-center mb-1">
+                    <ClipboardList className="w-4 h-4 mr-2 text-yellow-600" />
+                    <span className="font-medium">Start Reviewing</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {stats?.reviewsPending ? `${stats.reviewsPending} cases awaiting review` : 'Review Clara AI assessments'}
+                  </span>
+                </Button>
+              </Link>
+              <Link href="/escalations">
+                <Button variant="outline" className="w-full justify-start h-auto flex-col items-start p-4" data-testid="button-manage-escalations">
+                  <div className="flex items-center mb-1">
+                    <MessageSquare className="w-4 h-4 mr-2 text-coral" />
+                    <span className="font-medium">Manage Escalations</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    {stats?.escalations ? `${stats.escalations} active conversations` : 'Message with parents'}
+                  </span>
                 </Button>
               </Link>
               <Link href="/patients">
-                <Button variant="outline" className="w-full justify-start" data-testid="button-patient-list">
-                  <Users className="w-4 h-4 mr-2" />
-                  Patient List
+                <Button variant="outline" className="w-full justify-start h-auto flex-col items-start p-4" data-testid="button-patient-list">
+                  <div className="flex items-center mb-1">
+                    <Users className="w-4 h-4 mr-2 text-teal" />
+                    <span className="font-medium">Browse Patients</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">
+                    View medical histories
+                  </span>
                 </Button>
               </Link>
-              <Link href="/analytics">
-                <Button variant="outline" className="w-full justify-start" data-testid="button-analytics">
-                  <Activity className="w-4 h-4 mr-2" />
-                  Analytics
-                </Button>
-              </Link>
+              <Button variant="outline" className="w-full justify-start h-auto flex-col items-start p-4 cursor-not-allowed opacity-50" data-testid="button-recent-activity">
+                <div className="flex items-center mb-1">
+                  <Clock className="w-4 h-4 mr-2 text-gray-500" />
+                  <span className="font-medium">Recent Activity</span>
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  Your review history (Coming Soon)
+                </span>
+              </Button>
             </div>
           </CardContent>
         </Card>
