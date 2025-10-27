@@ -123,57 +123,6 @@ export default function Dashboard() {
           )}
         </div>
 
-        {/* Quick Actions - Distinct Functions */}
-        <Card className="mb-8">
-          <CardContent className="p-6">
-            <h2 className="text-lg font-semibold text-foreground mb-4">Quick Actions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <Link href="/reviews">
-                <Button variant="outline" className="w-full justify-start h-auto flex-col items-start p-4" data-testid="button-start-reviewing">
-                  <div className="flex items-center mb-1">
-                    <ClipboardList className="w-4 h-4 mr-2 text-yellow-600" />
-                    <span className="font-medium">Start Reviewing</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {stats?.reviewsPending ? `${stats.reviewsPending} cases awaiting review` : 'Review Clara AI assessments'}
-                  </span>
-                </Button>
-              </Link>
-              <Link href="/escalations">
-                <Button variant="outline" className="w-full justify-start h-auto flex-col items-start p-4" data-testid="button-manage-escalations">
-                  <div className="flex items-center mb-1">
-                    <MessageSquare className="w-4 h-4 mr-2 text-coral" />
-                    <span className="font-medium">Manage Escalations</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    {stats?.escalations ? `${stats.escalations} active conversations` : 'Message with parents'}
-                  </span>
-                </Button>
-              </Link>
-              <Link href="/patients">
-                <Button variant="outline" className="w-full justify-start h-auto flex-col items-start p-4" data-testid="button-patient-list">
-                  <div className="flex items-center mb-1">
-                    <Users className="w-4 h-4 mr-2 text-teal" />
-                    <span className="font-medium">Browse Patients</span>
-                  </div>
-                  <span className="text-xs text-muted-foreground">
-                    View medical histories
-                  </span>
-                </Button>
-              </Link>
-              <Button variant="outline" className="w-full justify-start h-auto flex-col items-start p-4 cursor-not-allowed opacity-50" data-testid="button-recent-activity">
-                <div className="flex items-center mb-1">
-                  <Clock className="w-4 h-4 mr-2 text-gray-500" />
-                  <span className="font-medium">Recent Activity</span>
-                </div>
-                <span className="text-xs text-muted-foreground">
-                  Your review history (Coming Soon)
-                </span>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
         {/* System Status */}
         <Card>
           <CardContent className="p-6">
