@@ -167,8 +167,25 @@
   [data-radix-hover-card-content],
   [data-radix-popover-content] {
     @apply bg-popover backdrop-blur-none shadow-lg border;
-    background-color: hsl(var(--popover));
+    background-color: hsl(var(--popover)) !important;
     border-color: hsl(var(--popover-border));
+  }
+  
+  /* Specifically target select viewport and listbox */
+  [data-radix-select-viewport],
+  [role="listbox"] {
+    background-color: hsl(var(--popover)) !important;
+    @apply backdrop-blur-none;
+  }
+  
+  /* Ensure select options have solid backgrounds */
+  [role="option"] {
+    background-color: transparent;
+  }
+  
+  [role="option"]:hover,
+  [role="option"]:focus {
+    background-color: hsl(var(--accent));
   }
   
   /* Solid background for toasts */

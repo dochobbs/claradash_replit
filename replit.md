@@ -108,6 +108,8 @@ ai_interactions (1) ─── (many) provider_reviews
 - **No Text Messaging**: Not implemented yet (planned for future)
 
 ## Recent Changes (October 27, 2025)
+
+### Initial Implementation
 1. Implemented complete database schema with Drizzle ORM
 2. Added PostgreSQL enum for reviewDecision to enforce valid values
 3. Built all frontend components following clinical design guidelines
@@ -122,6 +124,18 @@ ai_interactions (1) ─── (many) provider_reviews
    - Ensured WCAG AA compliance (dark text on bright yellow/coral accents)
    - Updated ReviewBadge with Vital color semantics (yellow=agree, teal=agree with thoughts, coral=needs escalation)
    - Applied Bauhaus minimalism principles throughout UI
+
+### UX Improvements (Completed Today)
+1. **Fixed Critical Navigation Bug**: ReviewWorkbench page now properly displays sidebar navigation by wrapping component in Layout
+2. **Dashboard Redesign**: Eliminated redundancy with distinct action cards and yellow primary buttons
+3. **Enhanced Metrics**: Added agrees/disagrees counts to dashboard for better review outcome visibility
+4. **Provider Identity**: Replaced Vital logo with Dr. Sarah Chen's avatar (initials "SC") in sidebar
+5. **Fixed Transparency Issues**: Applied CSS overrides with !important to ensure solid backgrounds on all dropdowns and popups
+6. **Clickable Phone Numbers**: All phone numbers now use tel: protocol for direct SMS/calling functionality
+7. **Patient List Hierarchy**: Patient cards now display child names as primary with parent info as secondary
+8. **Monospace Typography**: Extended monospace font usage to all technical data (MRN, ICD-10 codes, timestamps, IDs)
+9. **Status Legend**: Added color-coded legend on Patients page clarifying urgency levels (green=Active, amber=Review Pending, red=Escalated)
+10. **Route Enhancement**: Added /review-workbench as alternate route to ReviewWorkbench component
 
 ## Running the Project
 ```bash

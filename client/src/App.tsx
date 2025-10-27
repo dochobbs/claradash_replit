@@ -19,6 +19,7 @@ function Router() {
       <Route path="/patients" component={Patients} />
       <Route path="/patients/:id" component={PatientDetail} />
       <Route path="/reviews" component={ReviewWorkbench} />
+      <Route path="/review-workbench" component={ReviewWorkbench} />
       <Route path="/escalations" component={Escalations} />
       <Route path="/analytics" component={Analytics} />
       <Route component={NotFound} />
