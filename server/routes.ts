@@ -1,0 +1,195 @@
+import type { Express } from "express";
+import { createServer, type Server } from "http";
+import { storage } from "./storage";
+import { 
+  insertPatientSchema, 
+  insertChildSchema, 
+  insertAiInteractionSchema, 
+  insertProviderReviewSchema 
+} from "@shared/schema";
+
+export async function registerRoutes(app: Express): Promise<Server> {
+  // Stats endpoint
+  app.get("/api/stats", async (_req, res) => {
+    try {
+      const allInteractions = await storage.getAllAiInteractionsWithDetails();
+      const allPatients = await storage.getAllPatientsWithChildren();
+
+      const reviewsPending = allInteractions.filter(
+        (interaction) => interaction.reviews.length === 0
+      ).length;
+
+      const escalations = allInteractions.filter((interaction) =>
+        interaction.reviews.some((review) => review.reviewDecision === "needs_escalation")
+      ).length;
+
+      const activePatients = allPatients.length;
+
+      // Calculate average response time (simplified - time between interaction and first review)
+      const reviewedInteractions = allInteractions.filter(
+        (interaction) => interaction.reviews.length > 0
+      );
+      
+      let avgResponseTime = "N/A";
+      if (reviewedInteractions.length > 0) {
+        const totalMinutes = reviewedInteractions.reduce((sum, interaction) => {
+          const interactionTime = new Date(interaction.createdAt).getTime();
+          const reviewTime = new Date(interaction.reviews[0].createdAt).getTime();
+          const diffMinutes = (reviewTime - interactionTime) / (1000 * 60);
+          return sum + diffMinutes;
+        }, 0);
+        
+        const avgMinutes = totalMinutes / reviewedInteractions.length;
+        if (avgMinutes < 60) {
+          avgResponseTime = `${Math.round(avgMinutes)}m`;
+        } else {
+          avgResponseTime = `${Math.round(avgMinutes / 60)}h`;
+        }
+      }
+
+      res.json({
+        reviewsPending,
+        escalations,
+        activePatients,
+        avgResponseTime,
+      });
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+      res.status(500).json({ error: "Failed to fetch stats" });
+    }
+  });
+
+  // Patients endpoints
+  app.get("/api/patients", async (_req, res) => {
+    try {
+      const patients = await storage.getAllPatientsWithChildren();
+      
+      // Enrich with stats
+      const patientsWithStats = await Promise.all(
+        patients.map(async (patient) => {
+          const interactions = await storage.getAiInteractionsByPatient(patient.id);
+          
+          const lastReview = interactions
+            .flatMap((i) => i.reviews)
+            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
+
+          const hasEscalation = interactions.some((i) =>
+            i.reviews.some((r) => r.reviewDecision === "needs_escalation")
+          );
+          
+          const hasPendingReview = interactions.some((i) => i.reviews.length === 0);
+
+          let status: "active" | "review_pending" | "escalated" = "active";
+          if (hasEscalation) status = "escalated";
+          else if (hasPendingReview) status = "review_pending";
+
+          return {
+            ...patient,
+            interactionCount: interactions.length,
+            lastReviewDate: lastReview?.createdAt,
+            status,
+          };
+        })
+      );
+
+      res.json(patientsWithStats);
+    } catch (error) {
+      console.error("Error fetching patients:", error);
+      res.status(500).json({ error: "Failed to fetch patients" });
+    }
+  });
+
+  app.get("/api/patients/:id", async (req, res) => {
+    try {
+      const patient = await storage.getPatientWithChildren(req.params.id);
+      if (!patient) {
+        return res.status(404).json({ error: "Patient not found" });
+      }
+      res.json(patient);
+    } catch (error) {
+      console.error("Error fetching patient:", error);
+      res.status(500).json({ error: "Failed to fetch patient" });
+    }
+  });
+
+  app.post("/api/patients", async (req, res) => {
+    try {
+      const validatedData = insertPatientSchema.parse(req.body);
+      const patient = await storage.createPatient(validatedData);
+      res.status(201).json(patient);
+    } catch (error) {
+      console.error("Error creating patient:", error);
+      res.status(400).json({ error: "Invalid patient data" });
+    }
+  });
+
+  // Children endpoints
+  app.post("/api/children", async (req, res) => {
+    try {
+      const validatedData = insertChildSchema.parse(req.body);
+      const child = await storage.createChild(validatedData);
+      res.status(201).json(child);
+    } catch (error) {
+      console.error("Error creating child:", error);
+      res.status(400).json({ error: "Invalid child data" });
+    }
+  });
+
+  // AI Interactions endpoints
+  app.get("/api/interactions", async (_req, res) => {
+    try {
+      const interactions = await storage.getAllAiInteractionsWithDetails();
+      res.json(interactions);
+    } catch (error) {
+      console.error("Error fetching interactions:", error);
+      res.status(500).json({ error: "Failed to fetch interactions" });
+    }
+  });
+
+  app.get("/api/interactions/recent", async (_req, res) => {
+    try {
+      const interactions = await storage.getRecentAiInteractions(10);
+      res.json(interactions);
+    } catch (error) {
+      console.error("Error fetching recent interactions:", error);
+      res.status(500).json({ error: "Failed to fetch recent interactions" });
+    }
+  });
+
+  app.get("/api/interactions/:patientId", async (req, res) => {
+    try {
+      const interactions = await storage.getAiInteractionsByPatient(req.params.patientId);
+      res.json(interactions);
+    } catch (error) {
+      console.error("Error fetching patient interactions:", error);
+      res.status(500).json({ error: "Failed to fetch patient interactions" });
+    }
+  });
+
+  app.post("/api/interactions", async (req, res) => {
+    try {
+      const validatedData = insertAiInteractionSchema.parse(req.body);
+      const interaction = await storage.createAiInteraction(validatedData);
+      res.status(201).json(interaction);
+    } catch (error) {
+      console.error("Error creating interaction:", error);
+      res.status(400).json({ error: "Invalid interaction data" });
+    }
+  });
+
+  // Provider Reviews endpoints
+  app.post("/api/reviews", async (req, res) => {
+    try {
+      const validatedData = insertProviderReviewSchema.parse(req.body);
+      const review = await storage.createProviderReview(validatedData);
+      res.status(201).json(review);
+    } catch (error) {
+      console.error("Error creating review:", error);
+      res.status(400).json({ error: "Invalid review data" });
+    }
+  });
+
+  const httpServer = createServer(app);
+
+  return httpServer;
+}
