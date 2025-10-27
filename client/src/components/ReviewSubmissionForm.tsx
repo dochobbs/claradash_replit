@@ -151,6 +151,7 @@ export default function ReviewSubmissionForm({
               <FormControl>
                 <Textarea
                   {...field}
+                  value={field.value || ""}
                   data-testid="textarea-provider-notes"
                   placeholder="Add any additional clinical notes, recommendations, or context..."
                   className="min-h-32 resize-none text-sm"
